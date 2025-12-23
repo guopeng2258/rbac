@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色应用服务
@@ -135,6 +136,8 @@ public class RoleApplicationService {
     @Transactional(readOnly = true)
     public List<RoleDTO> listRolesByTenant(Long tenantId) {
         List<Role> roles = roleRepository.findByTenantId(tenantId);
-        return roles.stream().map(RoleAssembler::toDTO).toList();
+        return roles.stream()
+                .map(RoleAssembler::toDTO)
+                .collect(Collectors.toList());
     }
 }

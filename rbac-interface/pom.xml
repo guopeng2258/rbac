@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>rbac-ddd-system</artifactId>
+        <artifactId>rbac</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -26,18 +26,12 @@
             <groupId>com.example</groupId>
             <artifactId>rbac-application</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        <!-- 仅此模块需要的依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        <!-- 版本由 parent 的 dependencyManagement 管理 -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -57,5 +51,14 @@
             <artifactId>mapstruct</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 

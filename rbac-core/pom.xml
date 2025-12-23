@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>rbac-ddd-system</artifactId>
+        <artifactId>rbac</artifactId>
         <version>1.0.0</version>
     </parent>
 

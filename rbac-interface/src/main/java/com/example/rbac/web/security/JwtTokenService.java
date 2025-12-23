@@ -3,11 +3,13 @@ package com.example.rbac.web.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +17,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * JWT令牌服务
+ * JWT令牌服务 (JJWT 0.12.3)
  */
 @Component
 public class JwtTokenService {
     
-    @Value("${jwt.secret:your-secret-key-change-this-in-production-environment}")
+    @Value("${jwt.secret:your-secret-key-change-this-in-production-environment-must-be-at-least-256-bits-long-for-hs256}")
     private String secret;
     
     @Value("${jwt.expiration:3600000}")
@@ -47,12 +49,13 @@ public class JwtTokenService {
     }
     
     private String createToken(Map<String, Object> claims, String subject) {
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
     
@@ -79,7 +82,12 @@ public class JwtTokenService {
     }
     
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+        return Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
     
     /**
@@ -94,7 +102,11 @@ public class JwtTokenService {
      */
     public Boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+            Jwts.parser()
+                    .setSigningKey(key)
+                    .build()
+                    .parseSignedClaims(token);
             return !isTokenExpired(token);
         } catch (Exception e) {
             return false;

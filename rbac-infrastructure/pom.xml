@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>rbac-ddd-system</artifactId>
+        <artifactId>rbac</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -17,6 +17,11 @@
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>rbac-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
